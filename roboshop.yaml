@@ -1,0 +1,126 @@
+- name: create ec2 instance and route 53 records
+  hosts: local
+  connection: local
+  vars:
+    aws_region: "us-east-1"
+    ami_id: "ami-0055977a6e828a4f4"
+    instance_type: "t3.micro"
+    #when you give it in commandline these variables will be overwritten
+    #cmd: ansible-playbook roboshop.yaml -e "instances=['mongodb','redis']"
+    instances: ['mongodb','redis','mysql','rabbitmq','catalogue','user','cart','shipping','payment','frontend']
+    domain_name: "srikarlabs.space"
+    action: create
+    #action= delete you can give in the commandline directly as it overwrites other variables in this file
+    # ansible-playbook roboshop.yaml -e "action=delete"
+  tasks: 
+  - name: create ec2 instance
+    amazon.aws.ec2_instance:
+      name: "roboshop-{{ item }}"
+      image_id: "{{ ami_id }}"
+      instance_type: "{{ instance_type }}"
+      security_groups: ["roboshop-common", "roboshop-{{ item }}"]
+      region: "{{ aws_region }}"
+    loop: "{{ instances }}"
+    when: action == "create"
+    register: ec2_output
+
+  - name: print ec2-instance output
+    debug:
+      msg: "{{ ec2_output }}"
+
+  - name: create r53 dns records
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ item.item }}.{{ domain_name }}" #mongodb.srikarlabs.space
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}" 
+      overwrite: true
+    loop: "{{ ec2_output.results }}"
+    when: action == "create"
+
+  - name: create r53 record for frontend  
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}"
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    loop: "{{ ec2_output.results }}"
+    when: action == "create" and item.item == "frontend"
+
+  - name: delete r53 record
+    amazon.aws.route53: 
+      state: absent
+      zone: "{{ domain_name }}"
+      record: "{{ item }}.{{ domain_name }}"
+      type: A
+      ttl: 1
+    loop: "{{ instances }}"
+    when: action == "delete"
+  
+  - name: delete r53 record for frontend
+    amazon.aws.route53:
+      state: absent
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}"
+      type: A
+      ttl: 1
+    when: action == "delete" 
+
+  - name: delete ec2 instance
+    amazon.aws.ec2_instance:
+      name: "roboshop-{{ item }}"
+      state: absent
+      region: "{{ aws_region }}"
+      wait: false # when wait=false..check in points to check
+    loop: "{{ instances }}"
+    when: action == "delete"  
+  
+
+#points to check:
+#########################
+#create Ansible control node using awscli or manually
+#install ansible package == sudo dnf install ansible -y
+#Aws configure == configure with AWS Access KeyID; AWS Secret Access Key; region
+#install botcore and boto3 == pip3.9 install botocore boto3
+#nohup ansible-playbook 05-catalogue.yaml &> /home/ec2-user/roboshop-logs/catalogue.log &
+#nohup ansible-playbook mongodb.yaml > ansible.log 2>&1 &
+#both commands capture standard output and standard error
+#ps aux | grep ansible-playbook  == You can check if it's still running using
+#ps -ef | grep 2435 == you can also check wth PID both are same ps aux | ps -ef
+#tail -f /home/ec2-user/roboshop-logs/catalogue.log == And you can view the live output using
+#
+#
+#
+# Wait: false
+#  wait: false, Ansible submits the request to the AWS API, receives confirmation that the request was accepted, and immediately proceeds to the next task without blocking or waiting for the instance to finish booting up or shutting down.
+
+
+
+
+
+
+
+
+
+
+
+
+#Points to be noted:
+# To prevent confusion or collisions, Ansible allows you to rename item to whatever you want using loop_control.
+# Instead of relying on the generic item, you can name it something descriptive like component or db_name. Here is how you do it:
+  # - name: create ec2 instance
+  #   amazon.aws.ec2_instance:
+  #     name: "roboshop-{{ component }}"  # Custom name instead of item
+  #     image_id: "{{ ami_id }}"
+  #     instance_type: "{{ instance_type }}"
+  #     security_groups: ["roboshop-common", "roboshop-{{ component }}"]
+  #     region: "{{ aws_region }}"
+  #   loop: "{{ instance }}"
+  #   loop_control:
+  #     loop_var: component  # This renames 'item' to 'component'
+  #   register: ec2_output
