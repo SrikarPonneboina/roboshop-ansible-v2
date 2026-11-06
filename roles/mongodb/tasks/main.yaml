@@ -1,4 +1,3 @@
-
 - name: copy mongodb repo
   copy:
     src: mongo.repo
