@@ -21,6 +21,6 @@
     replace: '0.0.0.0'
 
 - name: restart service
-  include_role:
-    name: common
-    tasks_from: restart
+  service:
+    name: mongod
+    state: restarted
