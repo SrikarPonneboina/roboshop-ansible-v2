@@ -1,5 +1,10 @@
-# Ansible roles
-`
+# Ansible Role Structure Reference
+
+An Ansible role uses a standardized directory layout to organize tasks, variables, files, templates, and configurations into reusable modules.
+
+## Directory Tree
+
+```text
 my_role/
 ├── tasks/
 │   └── main.yml      # Main list of tasks to execute
@@ -15,7 +20,18 @@ my_role/
 ├── meta/
 │   └── main.yml      # Role metadata, author info, and dependencies
 └── README.md         # Documentation for the role
-`
+```
+
+## Core Directories Explained
+
+* **`tasks/`**: Contains the main list of actions executed by the role (starting with `tasks/main.yml`). You can also include other task files from here.
+* **`handlers/`**: Contains actions (such as restarting a web server) that run only when notified by a task using the `notify` keyword.
+* **`defaults/`**: Holds default variables with the lowest precedence. Anyone using your role can easily override these values.
+* **`vars/`**: Holds role-specific variables with a higher precedence that are not meant to be easily overridden.
+* **`files/`**: Stores static files that need to be copied onto the target servers.
+* **`templates/`**: Stores Jinja2 templates that render configuration files dynamically using variables.
+* **`meta/`**: Stores metadata about the role, including minimum Ansible version, license, and dependencies on other roles.
+
 
 # Ansible Vault
 `Ansible Vault helps us to store our secrets and credentials so they will not be exposed to users. For the vault, we can also store passwords. All the secrets and credentials, everything, will be stored in this vault. This vault file is on the control node server. And it is encrypted with a password and every time you edit this vault.yaml file, you have to copy the encrypted message and update the vault.yaml which is stored in group_vars folder -> vault.yaml.`
