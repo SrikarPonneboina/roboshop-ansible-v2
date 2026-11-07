@@ -1,0 +1,19 @@
+- name: application setup
+  include_role:
+    name: common
+    tasks_from: app-setup
+
+- name: python setup
+  include_role:
+    name: common
+    tasks_from: python-setup
+
+- name: service setup
+  include_role:
+    name: common
+    tasks_from: service-setup
+  
+- name: start service setup
+  include_role:
+    name: common
+    tasks_from: restart
