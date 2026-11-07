@@ -1,0 +1,14 @@
+- name: application setup
+  include_role:
+    name: common
+    tasks: app-setup
+  
+- name: nodejs setup
+  include_role:
+    name: common
+    tasks_from: nodejs-setup
+
+- name: service setup
+  include_role:
+    name: common
+    tasks_from: service-setup

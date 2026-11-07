@@ -1,0 +1,4 @@
+- name: create {{ component }} service file
+  template:
+    src: "{{ component }}.service.j2"
+    dest: "/etc/systemd/system/{{ component }}.service"
