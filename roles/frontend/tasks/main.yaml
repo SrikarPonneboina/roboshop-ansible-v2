@@ -1,0 +1,22 @@
+- name: nginx setup
+  include_role:
+    name: common
+    tasks_from: nginx-setup
+
+- name: download frontend application code
+  get_url:
+    url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
+    dest: /tmp/frontend.zip
+
+- name: unzip frontend in /app directory
+  unarchive:
+    src: /tmp/frontend.zip
+    dest: /usr/share/nginx/html
+    remote_src: true
+
+- name: copy roboshop.conf to /etc/nginx/default.d/roboshop.conf
+  template:
+    src: roboshop.conf.j2
+    dest: /etc/nginx/default.d/roboshop.conf
+  notify: restart again
+  
