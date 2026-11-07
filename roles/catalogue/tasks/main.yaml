@@ -1,11 +1,11 @@
 - name: application setup 
   include_role:
-  - name: common
+    name: common
     tasks_from: app-setup
 
 - name: nodejs setup
   include_role:
-  - name: common
+    name: common
     tasks_from: nodejs-setup
 
 - name: create catalogue service file
