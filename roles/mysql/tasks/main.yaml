@@ -13,4 +13,4 @@
     enabled: true
   
 - name: set root password for mysql server
-  command: mysql_secure_installation --set-root-pass {{ mysql_root_password }}
+  shell: mysql_secure_installation --set-root-pass {{ mysql_root_password }}
