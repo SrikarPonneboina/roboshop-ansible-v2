@@ -6,3 +6,13 @@ ansible_password: "{{ vault_ansible_password }}"
 mysql_root_password: "{{ vault_mysql_root_password }}"
 rabbitmq_user: "{{ vault_rabbitmq_user }}"
 rabbitmq_password: "{{ vault_rabbitmq_password }}"
+
+mongodb_host: mongodb.srikarlabs.space
+redis_host: redis.srikarlabs.space
+mysql_host: mysql.srikarlabs.space
+rabbitmq_host: rabbitmq.srikarlabs.space
+catalogue_host: catalogue.srikarlabs.space
+cart_host: cart.srikarlabs.space
+user_host: user.srikarlabs.space
+shipping_host: shipping.srikarlabs.space
+payment_host: payment.srikarlabs.space
