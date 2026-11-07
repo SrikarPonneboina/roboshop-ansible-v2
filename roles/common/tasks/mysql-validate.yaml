@@ -1,0 +1,21 @@
+
+- name: check cities data exists or not 
+  shell:
+    mysql -h {{ mysql_host }} -u root -p{{ mysql_root_password }} -ss -e "SELECT COUNT(*) FROM cities.cities;"
+  register: cities_count
+  ignore_errors: true
+  tags:
+  - cities-check
+
+- name: print cities count output
+  debug:
+    msg: "{{ cities_count }}"
+  tags:
+  - cities-check
+
+- name: load the cities data into mysql
+  shell: mysql -h {{ mysql_host }} -uroot -p{{ mysql_root_password }} < /app/db/master-data.sql
+  when: cities_count.rc != 0 or cities_count.stdout | int == 0
+
+- name: create app user mysql
+  shell: mysql -h {{ mysql_host }} -uroot -p{{ mysql_root_password }} < /app/db/app-user.sql
