@@ -1,0 +1,43 @@
+- name: 1. Enable maven 3.9 module stream via DNF
+  command: dnf module enable maven:3.9 -y
+
+- name: 2. Install Maven and OpenJDK 25 Development Kit
+  dnf:
+    name: 
+      - maven
+      - java-25-openjdk-devel
+      - maven-openjdk25
+      - mysql
+    state: present
+
+- name: mvn version without JAVA_HOME
+  command: mvn --version
+  args:
+    chdir: /app
+    executable: /bin/bash
+  register: mvn_default
+  tags:
+  - test
+
+- name: print the mvn version output
+  debug: 
+    msg: "{{ mvn_default.stdout_lines }}"
+  tags:
+  - test
+
+- name: Build application package using maven
+  command: mvn clean package
+  args:
+    chdir: /app
+    executable: /bin/bash
+    # Runs 'mvn clean package' inside /app using bash, then moves the output jar to /app
+  tags:
+  - test
+
+- name: move shipping jar file
+  command: mv target/shipping.jar shipping.jar 
+  args:
+    chdir: /app
+    executable: /bin/bash
+  tags:
+  - test
