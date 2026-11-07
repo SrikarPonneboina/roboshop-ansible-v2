@@ -1,0 +1,3 @@
+- name: this is the dependency role
+  debug:
+    msg: hi from dependency-meta role as dependency
