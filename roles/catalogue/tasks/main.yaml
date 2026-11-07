@@ -1,3 +1,7 @@
+- name: print the variables
+  debug:
+    msg: "Hi {{ name }}, your learning {{ course }}, duration {{ duration }}"
+
 - name: application setup 
   include_role:
     name: common
