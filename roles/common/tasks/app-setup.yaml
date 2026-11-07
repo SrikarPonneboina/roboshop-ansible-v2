@@ -1,0 +1,45 @@
+- name: create system user roboshop
+  user:
+    name: roboshop
+    create_home: false
+    system: yes
+    home: /app
+    shell: /sbin/nologin
+    comment: "this is roboshop system user"
+    state: present
+
+- name: remove the app directory
+  ansible.builtin.file:
+    path: /app
+    state: directory
+    state: absent
+
+- name: remove {{ component }}.zip
+  file:
+    path: /tmp/{{ component }}.zip
+    state: absent 
+
+- name: create the app directory
+  ansible.builtin.file:
+    path: /app
+    state: directory
+
+# - name: clean up existing code inside /app if present
+#   ansible.builtin.file:
+#     path: "/app/{{ item }}"
+#     state: absent
+#   loop:
+#     - node_modules
+#     - server.js
+#     - package.json
+
+- name: download the application code zip to tmp
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/{{ component }}-v4.zip
+    dest: /tmp/{{ component }}.zip
+
+- name: unzip the application code
+  unarchive:
+    src: /tmp/{{ component }}.zip
+    dest: /app
+    remote_src: yes
