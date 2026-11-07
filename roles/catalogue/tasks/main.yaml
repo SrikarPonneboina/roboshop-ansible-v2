@@ -35,3 +35,8 @@
 - name: load the products data
   shell: mongosh --host {{ mongodb_host }} </app/db/master-data.js
   when: product_count.stdout | int == 0 
+
+- name: restart service
+  include_role:
+  - name: common
+    tasks_from: restart
