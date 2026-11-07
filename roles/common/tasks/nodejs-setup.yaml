@@ -1,0 +1,13 @@
+- name: disable default nodejs and enable nodejs:24
+  shell: |
+    dnf module disable nodejs -y
+    dnf module enable nodejs:24 -y
+
+- name: install nodejs:24
+  dnf:
+    name: nodejs
+    state: present
+
+- name: install dependencies
+  npm:
+    path: /app

@@ -1,1 +1,7 @@
 
+- name: deamon reload, start and enable {{ component }}
+  service:
+    daemon_reload: true
+    name: "{{ component }}"
+    state: started
+    enabled: true
