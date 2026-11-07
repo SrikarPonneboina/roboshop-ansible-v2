@@ -1,0 +1,4 @@
+- name: print variables
+  debug:
+    msg: "Hi.. {{ name }}, your are learning {{ course }}, duration is {{ duration }}"
+  
