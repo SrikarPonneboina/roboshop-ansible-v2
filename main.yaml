@@ -3,3 +3,17 @@
   become: true
   roles: # By default it checks in roles folder in current directory
   - "{{ component }}"
+
+
+
+
+# points to check
+# Once the control node is created 
+# you have to download Ansible in the control node and also download botocore and boto3 using `pip3.9` and then run `aws configure` using the keyID and secret key 
+# To store your secrets securely create an Ansible Vault on the control node server. 
+# using ansible-vault create vault.yaml (this vault stores all the secrets and passwords which are required for application configuration). 
+# When you create Ansible Vault you have to set up a password and you have to remember it. Or else you can also store this password in the control node server itself. To store the password you can store it in some location and inform ansible about this path in the ansible.cfg file.
+# vault_password_file= ~/.ansible_vault_pass    === You can include this line in ansible.cfg. (informing)
+# Inside the ansible_vault_pass you have to include your password in the file so that Ansible checks under this vault password file. It brings that password, opens the vault, and decrypts vault.yaml which is there under group_vars/all
+# If you don't do this every time you have to provide the password from the command line by using `--ask-vault-pass` 
+# eg ansible-playbook roboshop.yaml -e "instances=['mongodb','redis']" --ask-vault-pass
