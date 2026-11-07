@@ -1,0 +1,25 @@
+- name: application setup
+  include_role:
+    name: common
+    tasks_from: app-setup
+
+- name: java setup
+  include_role:
+    name: common
+    tasks_from: java-setup
+
+- name: upload mysql data
+  include_role:
+    name: mysql-data
+    tasks_from: mysql-validate
+
+- name: service setup
+  include_role:
+    name: common
+    tasks_from: service-setup
+
+- name: restart service
+  include_role:
+    name: common
+    tasks_from: restart
+
