@@ -1,0 +1,33 @@
+- name: disable and enable nginx version:1.26
+  shell: |
+    dnf module disable nginx -y 
+    dnf module enable nginx:1.26 -y
+
+- name: download nginx
+  dnf:
+    name: nginx
+    state: present
+
+- name: enable and start service
+  service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: remove default content from the folder nginx-html 
+  find:
+    paths: /usr/share/nginx/html/
+    recurse: true
+    file_type: any 
+    hidden: true
+  register: folder_contents
+
+- name: print folder contents
+  debug:
+    msg: "{{ folder_contents }}"
+
+- name: delete all found items 
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ folder_contents.files }}"
