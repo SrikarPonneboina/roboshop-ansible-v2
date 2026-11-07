@@ -38,5 +38,5 @@
 
 - name: restart service
   include_role:
-  - name: common
+    name: common
     tasks_from: restart
