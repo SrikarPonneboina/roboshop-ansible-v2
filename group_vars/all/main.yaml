@@ -2,7 +2,7 @@
 # ansible_password: DevOps321
 
 ansible_user: "{{ lookup('amazon.aws.secretsmanager_secret', 'roboshop/dev/ansible.ansible_user', nested=true, region='us-east-1') }}"
-ansible_password: "{{ lookup('amazon.aws.aws_secret', 'roboshop/dev/ansible', region='us-east-1') | from_json | json_query('ansible_password')  }}"
+ansible_password: "{{ lookup('amazon.aws.secretsmanager_secret', 'roboshop/dev/ansible.ansible_password', nested=true, region='us-east-1') }}"
 mysql_root_password: "{{ lookup('amazon.aws.aws_secret', 'roboshop/dev/ansible', region='us-east-1') | from_json | json_query('mysql_root_password')  }}"
 rabbitmq_user: "{{ vault_rabbitmq_user }}"
 rabbitmq_password: "{{ vault_rabbitmq_password }}"
